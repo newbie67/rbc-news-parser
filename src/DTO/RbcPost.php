@@ -22,6 +22,11 @@ final class RbcPost
     private string $text;
 
     /**
+     * @var string
+     */
+    private string $rbcId;
+
+    /**
      * @var RbcImage|null
      */
     private ?RbcImage $image;
@@ -39,11 +44,15 @@ final class RbcPost
         string $title,
         string $text,
         ?RbcImage $image
-    ) {
+    )
+    {
         $this->postLink = $postLink;
         $this->title = $title;
         $this->text = $text;
         $this->image = $image;
+
+        $urlParts = explode('/', $this->postLink->getUrl());
+        $this->rbcId = end($urlParts);
     }
 
     /**
@@ -54,27 +63,35 @@ final class RbcPost
         return $this->postLink;
     }
 
-//    /**
-//     * @return RbcPostLink
-//     */
-//    public function getPostLink(): RbcPostLink
-//    {
-//        return $this->postLink;
-//    }
-//
-//    /**
-//     * @return string
-//     */
-//    public function getTitle(): string
-//    {
-//        return $this->title;
-//    }
-//
-//    /**
-//     * @return string
-//     */
-//    public function getText(): string
-//    {
-//        return $this->text;
-//    }
+    /**
+     * @return RbcImage|null
+     */
+    public function getImage(): ?RbcImage
+    {
+        return $this->image;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRbcId(): string
+    {
+        return $this->rbcId;
+    }
 }

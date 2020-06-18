@@ -9,3 +9,8 @@ copy docker-compose.yml.dist docker-compose.yml
 docker-compose up -d
 docker-compose exec php composer install
 ```
+
+Миграции
+```bash
+docker-compose exec php php bin/console doctrine:migrations:migrate
+```

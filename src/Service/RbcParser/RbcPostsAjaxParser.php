@@ -70,6 +70,6 @@ class RbcPostsAjaxParser
             }
         }
 
-        throw new \Exception('Возможно что-то пошло не так');
+        return $posts;
     }
 }
