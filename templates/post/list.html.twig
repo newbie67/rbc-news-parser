@@ -1,4 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-
+    <div class="article-list">
+        {% for post in posts %}
+            {{ include('post/_one_post.html.twig', {post: post}) }}
+        {% endfor %}
+    </div>
 {% endblock %}

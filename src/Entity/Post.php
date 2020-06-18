@@ -123,4 +123,12 @@ class Post
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getPreviewText(): string
+    {
+        return $this->text;
+    }
 }

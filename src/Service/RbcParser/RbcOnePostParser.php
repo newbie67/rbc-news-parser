@@ -8,6 +8,7 @@ use App\DTO\RbcImage;
 use App\DTO\RbcPost;
 use App\DTO\RbcPostLink;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -15,6 +16,40 @@ use Symfony\Component\DomCrawler\Crawler;
  */
 class RbcOnePostParser
 {
+    /**
+     * @var string[]
+     */
+    private array $articleHeaderSelectors = [
+        '.article .article__header .article__header__title > h1',
+        '.article .article__header .article__header__title > span',
+    ];
+
+    /**
+     * @var string[]
+     */
+    private array $articleImageSelectors = [
+        '.article .article__main-image img',
+    ];
+
+    /**
+     * @var string[]
+     */
+    private array $subTitleSelectors = [
+        '.article .article__content .article__text__overview span',
+    ];
+
+    /**
+     * @var string[]
+     */
+    private array $textSelectors = [
+        '.article .article__content .article__text > p',
+    ];
+
+    /**
+     * @var ClientInterface
+     */
+    private ClientInterface $client;
+
     /**
      * RbcOnePostParser constructor.
      */
@@ -30,13 +65,20 @@ class RbcOnePostParser
      */
     public function getPost(RbcPostLink $postLink): ?RbcPost
     {
+        $parsedUrl = parse_url($postLink->getUrl());
+
+        // Сразу отбросим новости из раздела "про" и все лендинги
+        if ($parsedUrl['host'] === 'pro.rbc.ru' || substr($parsedUrl['host'], -6) !== 'rbc.ru') {
+            return null;
+        }
+
         $response = $this->client->get($postLink->getUrl());
         $crawler = new Crawler($response->getBody()->__toString());
 
-        $title = $crawler->filter('.article .article__header .article__header__title > h1');
-        $image = $crawler->filter('.article .article__main-image img');
-        $subTitle = $crawler->filter('.article .article__content .article__text__overview span');
-        $textParagraphs = $crawler->filter('.article .article__content .article__text > p');
+        $title = $crawler->filter(implode(', ', $this->articleHeaderSelectors));
+        $image = $crawler->filter(implode(', ', $this->articleImageSelectors));
+        $subTitle = $crawler->filter(implode(', ', $this->subTitleSelectors));
+        $textParagraphs = $crawler->filter(implode(', ', $this->textSelectors));
 
         if ($title->count() === 1 && $textParagraphs->count() > 0) {
             $texts = [];
