@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Helper\TextTrimmer;
 use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Post
 {
+    private const PREVIEW_SIZE = 200;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -129,6 +132,6 @@ class Post
      */
     public function getPreviewText(): string
     {
-        return $this->text;
+        return TextTrimmer::trim($this->text, self::PREVIEW_SIZE);
     }
 }

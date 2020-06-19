@@ -3,13 +3,17 @@
         <div class="col-lg-12">
             <p class="h2">{{ post.getTitle() }}</p>
         </div>
-        <div class="content">
-            {{ post.getPreviewText()|purify }}
+        <div class="col-lg-12">
+
+            <div class="content">
+                {{ post.getPreviewText()|purify }}
+            </div>
         </div>
-        <div class="full-link">
-            <a href="{{ path('onePost', {rbcId: post.getRbcId() }) }}">Подробнее</a>
+        <div class="col-lg-12">
+            <div class="full-link">
+                <a href="{{ path('onePost', {rbcId: post.getRbcId() }) }}">Подробнее</a>
+            </div>
         </div>
     </div>
 </article>
 <hr>
-{{ dump(post) }}
