@@ -73,14 +73,14 @@ class LoadRbcPostsCommand extends Command
         try {
             $posts = $this->parser->getFeedPosts();
         } catch (\Exception $exception) {
-            echo 'Something went wrong: ' . $exception->getMessage();
+            $output->writeln('Something went wrong: ' . $exception->getMessage());
             return Command::SUCCESS;
         }
 
         $this->insertRbcPosts($posts);
 
-        echo 'New posts: ' . $this->countNew . PHP_EOL;
-        echo 'Updated posts: ' . $this->countUpdated . PHP_EOL;
+        $output->writeln('New posts: ' . $this->countNew);
+        $output->writeln('Updated posts: ' . $this->countUpdated);
 
         return Command::SUCCESS;
     }

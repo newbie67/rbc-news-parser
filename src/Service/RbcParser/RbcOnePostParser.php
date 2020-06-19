@@ -34,14 +34,8 @@ class RbcOnePostParser
     /**
      * @var string[]
      */
-    private array $subTitleSelectors = [
-        '.article .article__content .article__text__overview span',
-    ];
-
-    /**
-     * @var string[]
-     */
     private array $textSelectors = [
+        '.article .article__content .article__text__overview span',
         '.article .article__content .article__text > p',
     ];
 
@@ -77,17 +71,14 @@ class RbcOnePostParser
 
         $title = $crawler->filter(implode(', ', $this->articleHeaderSelectors));
         $image = $crawler->filter(implode(', ', $this->articleImageSelectors));
-        $subTitle = $crawler->filter(implode(', ', $this->subTitleSelectors));
         $textParagraphs = $crawler->filter(implode(', ', $this->textSelectors));
 
         if ($title->count() === 1 && $textParagraphs->count() > 0) {
-            $texts = [];
-            if ($subTitle->count()) {
-                $texts[] = trim($subTitle->text());
-            }
-            $textParagraphs->each(function (Crawler $node, $key) {
-                $texts[] = trim($node->html());
+            $texts = $textParagraphs->each(function (Crawler $node, $key) {
+                return trim($node->html());
             });
+            $texts = array_filter($texts, function($value) { return !is_null($value) && $value !== ''; });
+
             $image = $image->count() ? new RbcImage($image->attr('src'), $image->attr('alt')) : null;
 
             return new RbcPost(

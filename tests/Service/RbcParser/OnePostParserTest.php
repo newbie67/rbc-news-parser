@@ -46,13 +46,17 @@ class OnePostParserTest extends TestCase
                 $expected->getTitle(),
                 $result->getTitle()
             );
+
+
+            $this->assertEquals(
+                $expected->getText(),
+                $result->getText()
+            );
         }
     }
 
     /**
      * @return array
-     *
-     * @todo Actual
      */
     public function rbcPostLinksProvider(): array
     {
@@ -64,7 +68,7 @@ class OnePostParserTest extends TestCase
                 new RbcPost(
                     new RbcPostLink($item->url, $item->dateModify),
                     $item->title,
-                    $item->text,                                                                    // todo
+                    $item->text,
                     new RbcImage($item->imageSrc, $item->imageDescription)
                 ),
             ];
@@ -88,48 +92,6 @@ class OnePostParserTest extends TestCase
                 null,
             ],
         ], $correctPostLinks);
-////            [
-////                // Param
-////                new RbcPostLink(
-////                    'https://www.rbc.ru/economics/18/06/2020/5eeb52c79a79473363e6f0e8',
-////
-////                ),
-////                // Expected
-////                new RbcPost(
-////                    new RbcPostLink(
-////                        'https://www.rbc.ru/economics/18/06/2020/5eeb52c79a79473363e6f0e8',
-////                        1592483113
-////                    ),
-////                    '',
-////                    'asdf',                                                                             // todo
-////                    new RbcImage(
-////                        '',
-////                        ''
-////                    )
-////                ),
-////            ],
-////            [
-////                new RbcPostLink(
-////                    '',
-////
-////                ),
-////                // Expected
-////                new RbcPost(
-////                    new RbcPostLink(
-////                        'https://sport.rbc.ru/news/5eeb56029a794735a855e90d',
-////                        1592482024
-////                    ),
-////                    '',
-////                    'asdf',                                                                             // todo
-////                    new RbcImage(
-////                        '',
-////                        ''
-////                    )
-////                ),
-////            ],
-//
-//
-//        ];
     }
 
     /**

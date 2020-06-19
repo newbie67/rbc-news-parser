@@ -44,8 +44,7 @@ final class RbcPost
         string $title,
         string $text,
         ?RbcImage $image
-    )
-    {
+    ) {
         $this->postLink = $postLink;
         $this->title = $title;
         $this->text = $text;
