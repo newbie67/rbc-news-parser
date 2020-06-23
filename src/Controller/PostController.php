@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Post;
+use App\Helper\TextTrimmer;
 use App\Repository\PostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Urodoz\Truncate\TruncateInterface;
+use Urodoz\Truncate\TruncateService;
 
 class PostController extends AbstractController
 {
@@ -16,14 +20,20 @@ class PostController extends AbstractController
      * @Route("/", name="postList")
      *
      * @param PostRepository $postRepository
+     * @param TextTrimmer $textTrimmer
      * @return Response
      */
-    public function list(PostRepository $postRepository): Response
+    public function list(
+        PostRepository $postRepository,
+        TextTrimmer $textTrimmer
+    ): Response
     {
         $posts = $postRepository->findAll();
 
         return $this->render('post/list.html.twig', [
             'posts' => $posts,
+            'textTrimmer' => $textTrimmer,
+            'previewLength' => Post::PREVIEW_SIZE,
         ]);
     }
 

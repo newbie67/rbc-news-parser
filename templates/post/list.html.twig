@@ -2,7 +2,13 @@
 {% block body %}
     <div class="article-list">
         {% for post in posts %}
-            {{ include('post/_one_post.html.twig', {post: post}) }}
+            {{
+                include('post/_one_post.html.twig', {
+                    post: post,
+                    textTrimmer: textTrimmer,
+                    previewLength: previewLength,
+                })
+            }}
         {% endfor %}
     </div>
 {% endblock %}

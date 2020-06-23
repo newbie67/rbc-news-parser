@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Helper;
 
+use App\Entity\Post;
 use DomDocument;
 use DomNode;
 use DomText;
@@ -11,34 +12,38 @@ use DomText;
 class TextTrimmer
 {
     /**
-     * @var bool
+     * @var bool[]
      */
-    private bool $reachedLimit = false;
+    private array $reachedLimit = [];
 
     /**
-     * @var int
+     * @var int[]
      */
-    private int $totalLen = 0;
+    private array $totalLen = [];
 
     /**
-     * @var array
+     * @var DomNode[]
      */
     private array $toRemove = [];
 
     /**
-     * @param string $html
-     * @param int $maxLen
+     * @param Post $post
+     * @param int $limit
      *
      * @return string
      */
-    public static function trim(string $html, int $maxLen = 25): string
+    public function trim(Post $post, int $limit = 25): string
     {
         $dom = new DomDocument();
 
-        $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $dom->loadHTML(
+            mb_convert_encoding($post->getText(), 'HTML-ENTITIES', 'UTF-8'),
+            LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR
+        );
 
-        $instance = new static();
-        $toRemove = $instance->walk($dom, $maxLen);
+        $this->totalLen[$post->getId()] = 0;
+        $this->toRemove[$post->getId()] = [];
+        $toRemove = $this->walk($post->getId(), $dom, $limit);
 
         // remove any nodes that exceed limit
         foreach ($toRemove as $child) {
@@ -48,30 +53,41 @@ class TextTrimmer
         return $dom->saveHTML();
     }
 
-    private function walk(DomNode $node, $maxLen)
+    /**
+     * @param int $id
+     * @param DomNode $node
+     * @param $limit
+     *
+     * @return mixed
+     */
+    private function walk(int $id, DomNode $node, $limit)
     {
-        if ($this->reachedLimit) {
-            $this->toRemove[] = $node;
+        if (array_key_exists($id, $this->reachedLimit) && $this->reachedLimit[$id]) {
+            $this->toRemove[$id][] = $node;
         } else {
             // only text nodes should have text,
             // so do the splitting here
             if ($node instanceof DomText) {
-                $this->totalLen += $nodeLen = mb_strlen($node->nodeValue);
+                $this->totalLen[$id] += $nodeLen = mb_strlen($node->nodeValue);
 
-                if ($this->totalLen > $maxLen) {
-                    $node->nodeValue = mb_substr($node->nodeValue, 0, $nodeLen - ($this->totalLen - $maxLen)) . '...';
-                    $this->reachedLimit = true;
+                if ($this->totalLen[$id] > $limit) {
+                    $node->nodeValue = mb_substr(
+                        $node->nodeValue,
+                        0,
+                        $nodeLen - ($this->totalLen[$id] - $limit)
+                    ) . '...';
+                    $this->reachedLimit[$id] = true;
                 }
             }
 
             // if node has children, walk its child elements
             if (isset($node->childNodes)) {
                 foreach ($node->childNodes as $child) {
-                    $this->walk($child, $maxLen);
+                    $this->walk($id, $child, $limit);
                 }
             }
         }
 
-        return $this->toRemove;
+        return $this->toRemove[$id];
     }
 }

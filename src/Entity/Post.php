@@ -5,13 +5,15 @@ namespace App\Entity;
 use App\Helper\TextTrimmer;
 use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
+use SebastianBergmann\PHPLOC\Log\Text;
+use function GuzzleHttp\Psr7\parse_request;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
  */
 class Post
 {
-    private const PREVIEW_SIZE = 200;
+    public const PREVIEW_SIZE = 200;
 
     /**
      * @ORM\Id()
@@ -125,13 +127,5 @@ class Post
         $this->rbc_id = $rbc_id;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPreviewText(): string
-    {
-        return TextTrimmer::trim($this->text, self::PREVIEW_SIZE);
     }
 }

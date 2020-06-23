@@ -4,7 +4,11 @@
     "require": {
         "php": "^7.4",
         "ext-ctype": "*",
+        "ext-dom": "*",
         "ext-iconv": "*",
+        "ext-json": "*",
+        "ext-libxml": "*",
+        "exercise/htmlpurifier-bundle": "*",
         "guzzlehttp/guzzle": "~6.0",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/asset": "5.1.*",
@@ -29,11 +33,7 @@
         "symfony/twig-pack": "^1.0",
         "symfony/validator": "5.1.*",
         "symfony/web-link": "5.1.*",
-        "symfony/yaml": "5.1.*",
-        "ext-dom": "*",
-        "ext-libxml": "*",
-        "ext-json": "*",
-        "exercise/htmlpurifier-bundle": "*"
+        "symfony/yaml": "5.1.*"
     },
     "require-dev": {
         "symfony/debug-pack": "*",
